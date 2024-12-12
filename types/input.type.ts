@@ -5,6 +5,7 @@ export interface EmailInput {
 	personalizations: Personalization[];
 	content: Content[];
 	attachments?: Attachment[];
+	attachment_raw?: Attachment[];
 }
 
 export interface Attachment {
@@ -29,4 +30,14 @@ export interface From {
 
 export interface Personalization {
 	to: From[];
+}
+
+export interface Data {
+	id: number;
+	from: string;
+	to: string;
+	subject: string;
+	attachment?: string;
+	attachment_raw?: any;
+	body: string;
 }
