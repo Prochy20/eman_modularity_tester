@@ -1,4 +1,4 @@
-# Nuxt Minimal Starter
+# Modularita: Email tester
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
@@ -56,20 +56,16 @@ yarn build
 bun run build
 ```
 
-Locally preview production build:
+Run production build:
 
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+```
+node .output/server/index.mjs
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## ENV
+
+Following variables must be set:
+
+```
+API_URL="http://10.0.0.117:3005/api/mails" // url of the API of the mail mock server
+```

@@ -1,16 +1,39 @@
 <template>
-	<div class="container mx-auto m-10">
+	<div class="container mx-auto py-5">
 		<h1 class="text-3xl tracking-tight uppercase font-black">
 			Modularita: Tester emailů
 		</h1>
-		<div class="flex gap-y-10 flex-col mt-10">
-			<UTextarea :rows="10" v-model="input"></UTextarea>
-			<UButton @click="parseInput">Parse input</UButton>
+		<div class="mt-2 flex flex-row gap-x-1 items-center text-gray-400">
+			<UIcon name="i-lucide-server" />
+			<small class="small">
+				{{ config.public.API_URL }}
+			</small>
+		</div>
+		<div class="flex gap-y-3 flex-col mt-3">
+			<div class="ml-auto flex flex-row gap-x-2 items-center">
+				<p>Zobrazit vstupní pole:</p>
+				<UToggle
+					on-icon="i-heroicons-check-20-solid"
+					off-icon="i-heroicons-x-mark-20-solid"
+					v-model="showInput"
+				/>
+			</div>
+			<UTextarea v-if="showInput" :rows="10" v-model="input"></UTextarea>
+		</div>
+		<div class="flex flex-row mt-10 gap-x-5 items-center justify-center">
+			<UButton
+				v-if="showInput"
+				:disabled="!input"
+				icon="i-lucide-binoculars"
+				@click="parseInput"
+				>Parse input</UButton
+			>
 			<UButton
 				v-if="config.public.API_URL"
+				icon="i-lucide-download"
 				:loading="status === 'pending'"
 				@click="downloadData"
-				>Download Data</UButton
+				>Download Data & Parse input</UButton
 			>
 		</div>
 		<div class="mt-10">
@@ -54,8 +77,9 @@
 <script lang="ts" setup>
 	import type { EmailInput, Data } from '~/types/input.type';
 
-	const input = ref<string>('');
-
+	/**
+	 * Datagrid columns
+	 */
 	const columns = [
 		{
 			key: 'from',
@@ -79,7 +103,11 @@
 		},
 	];
 
+	/**
+	 * Data
+	 */
 	const data = ref<Data[]>([]);
+	const input = ref<string>('');
 	const output = ref<any>();
 
 	/**
@@ -95,12 +123,9 @@
 		immediate: false,
 	});
 
-	if (config.public.API_URL) {
-		await execute({
-			dedupe: true,
-		});
-	}
-
+	/**
+	 * Downloads the data from the API
+	 */
 	const downloadData = async () => {
 		if (!config.public.API_URL) {
 			return;
@@ -109,6 +134,7 @@
 			dedupe: true,
 		});
 		input.value = JSON.stringify(emails.value, null, 2);
+		parseInput();
 	};
 
 	/**
@@ -129,10 +155,16 @@
 		}));
 	};
 
+	if (config.public.API_URL) {
+		await downloadData();
+	}
+
 	/**
 	 * Shows the raw output
 	 */
 	const showRaw = (id: number) => {
 		output.value = data.value.find((item) => item.id === id);
 	};
+
+	const showInput = ref<boolean>(true);
 </script>
